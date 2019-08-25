@@ -306,7 +306,7 @@ pub fn query(callsign: &str) -> Result<(), reqwest::Error> {
 
     let qrzdb: QrzDatabase = from_str(&query_resp).unwrap();
 
-    if qrzdb.session.error == "Session Timeout" {
+    if qrzdb.session.error == "Session Timeout" || qrzdb.session.error == "Username / password required" {
         let _s = match session() {
             Ok(k) => k,
             Err(_e) => panic!("error")
