@@ -199,7 +199,7 @@ pub fn query(key: &str, callsign: &str) -> Result<(), reqwest::Error> {
         .text()?;
 
     let qrzdb: QrzDatabase = from_str(&query_resp).unwrap();
-    println!("\n{}", qrzdb.callsign.call);
+    println!("\n{} (QRZ)", qrzdb.callsign.call);
     println!("  Name: {} {}", qrzdb.callsign.fname, qrzdb.callsign.name);
     println!("  Location: {}, {}, {}", qrzdb.callsign.addr2, qrzdb.callsign.state, qrzdb.callsign.land);
     println!("  Class: {}", qrzdb.callsign.class);

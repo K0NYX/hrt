@@ -4,7 +4,7 @@
 
 ## Config
 
-Copy the example [hrt.toml](hrt.toml) config file to `~/.hrt.toml` and set the config values for what the tools you plan to use.
+Copy the example [hrt.toml](hrt.toml) config file to `~/.hrt.toml` and set the config values for the commands you plan to use.
 
 ## Commands
 
@@ -17,10 +17,22 @@ hrt call KE0TSN
 ```
 
 ```
-KE0TSN
+KE0TSN (QRZ)
   Name: Bryce D Johnston
   Location: Saint George, KS, United States
-  License: G
+  Class: G
+```
+
+Use alternative lookup source than the default specified in config:
+
+```bash
+hrt call KE0TSN -s hamqth
+```
+
+```
+ke0tsn (HamQTH)
+  Name: Bryce D Johnston
+  Location: Saint George, United States
 ```
 
 Additional call command flags will be added to allow returning additional information.
@@ -31,4 +43,4 @@ Feature requests, bug reports, and pull requests are welcome on GitHub at https:
 
 ## License
 
-Licensed under the [MIT License](http://opensource.org/licenses/MIT).
+Licensed under the [MIT License](LICENSE.md).

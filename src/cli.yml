@@ -10,3 +10,9 @@ subcommands:
                 help: Sets the callsign to lookup
                 required: true
                 index: 1
+            - source:
+                short: s
+                long: source
+                value_name: SOURCE
+                help: Sets callsign lookup source (qrz or hamqth)
+                takes_value: true

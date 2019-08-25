@@ -1,9 +1,9 @@
 # Set the default source for callsign lookups (qrz or hamqth)
 cs_default = "qrz"
-# QRZ Login - callsign lookups
+# QRZ Login - callsign lookup source
 qrz_callsign = ""
 qrz_password = ""
-# HamQTH Login - alternative callsign lookups
+# HamQTH Login - callsign lookup source
 hamqth_callsign = ""
 hamqth_password = ""
 # QTH Location (use degrees)

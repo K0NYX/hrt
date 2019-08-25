@@ -10,6 +10,7 @@ extern crate clap;
 use clap::App;
 
 mod qrz;
+mod hamqth;
 
 use std::path::Path;
 
@@ -28,9 +29,22 @@ fn main() {
 
     if let Some(sub_matches) = matches.subcommand_matches("call") {
         if let Some(callsign) = sub_matches.value_of("CALLSIGN") {
-            let username = settings.get_str("qrz_callsign").unwrap();
-            let password = settings.get_str("qrz_password").unwrap();
-            qrz_call(&username, &password, &callsign);
+            let mut source = settings.get_str("cs_default").unwrap();
+
+            if let Some(s) = sub_matches.value_of("source") {
+                source = s.to_string();
+            }
+
+            if source == "hamqth" {
+                let username = settings.get_str("hamqth_callsign").unwrap();
+                let password = settings.get_str("hamqth_password").unwrap();
+                hamqth_call(&username, &password, &callsign);
+            } else {
+                let username = settings.get_str("qrz_callsign").unwrap();
+                let password = settings.get_str("qrz_password").unwrap();
+                qrz_call(&username, &password, &callsign);
+            }
+            
         }
     }
 }
@@ -41,4 +55,12 @@ fn qrz_call(username: &str, password: &str, callsign: &str) {
         Err(_e) => panic!("error")
     };
     let _query = qrz::query(&key, &callsign);
+}
+
+fn hamqth_call(username: &str, password: &str, callsign: &str) {
+    let key = match hamqth::session(&username, &password) {
+        Ok(k) => k,
+        Err(_e) => panic!("error")
+    };
+    let _query = hamqth::query(&key, &callsign);
 }
