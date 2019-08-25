@@ -49,10 +49,24 @@ hrt dxcc 291
 
 ```
 291 (QRZ)
-  Country: United States
-  ITU Zone: 0
-  CQ Zone: 0
-  UTC Timezone Offset: -5
+  Name: United States
+  ITU: 0
+  CQ: 0
+  UTC: -5
+```
+
+Use alternative lookup source instead of the default specified in config:
+
+```bash
+hrt dxcc 291 -s hamqth
+```
+
+```
+291 (HamQTH)
+  Name: United States
+  ITU: 8
+  UTC: 5
+  Details:
 ```
 
 DXCC lookup by callsign
@@ -63,15 +77,23 @@ hrt dxcc C4LLS1GN
 ```
 291 (QRZ)
   Country: United States
-  ITU Zone: 0
-  CQ Zone: 0
-  UTC Timezone Offset: -5
+  ITU: 0
+  CQ: 0
+  UTC: -5
 ```
 
 Use alternative lookup source instead of the default specified in config:
 
 ```bash
 hrt dxcc C4LLS1GN -s hamqth
+```
+
+```
+291 (HamQTH)
+  Name: United States
+  ITU: 07
+  UTC: 7
+  Details: USA - CO,IA,KS,MN,MO,ND,NE,SD
 ```
 
 ## Contributing

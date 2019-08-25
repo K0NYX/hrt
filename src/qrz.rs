@@ -262,9 +262,9 @@ pub fn dxcc(key: &str, entity: &str) -> Result<(), reqwest::Error> {
 
     let qrzdb: QrzDatabase = from_str(&query_resp).unwrap();
     println!("\n{} (QRZ)", qrzdb.dxcc.dxcc);
-    println!("  Country: {}", qrzdb.dxcc.name);
-    println!("  ITU Zone: {}", qrzdb.dxcc.ituzone);
-    println!("  CQ Zone: {}", qrzdb.dxcc.cqzone);
-    println!("  UTC Timezone Offset: {}", qrzdb.dxcc.timezone);
+    println!("  Name: {}", qrzdb.dxcc.name);
+    println!("  ITU: {}", qrzdb.dxcc.ituzone);
+    println!("  CQ: {}", qrzdb.dxcc.cqzone);
+    println!("  UTC: {}", qrzdb.dxcc.timezone);
     Ok(())
 }

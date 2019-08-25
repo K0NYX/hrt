@@ -81,9 +81,13 @@ fn qrz_call(username: &str, password: &str, callsign: &str, query_type: &str) {
 }
 
 fn hamqth_call(username: &str, password: &str, callsign: &str, query_type: &str) {
-    let key = match hamqth::session(&username, &password) {
-        Ok(k) => k,
-        Err(_e) => panic!("error")
-    };
-    let _query = hamqth::query(&key, &callsign);
+    if query_type == "call" {
+        let key = match hamqth::session(&username, &password) {
+            Ok(k) => k,
+            Err(_e) => panic!("error")
+        };
+        let _query = hamqth::query(&key, &callsign);
+    } else if query_type == "dxcc" {
+        let _query = hamqth::dxcc(&callsign);
+    }
 }

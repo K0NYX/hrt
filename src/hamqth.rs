@@ -166,12 +166,55 @@ impl Default for Search {
 }
 
 #[derive(Debug, Deserialize)]
+struct Dxcc {
+    #[serde(default)]
+    callsign: String,
+    #[serde(default)]
+    name: String,
+    #[serde(default)]
+    details: String,
+    #[serde(default)]
+    continent: String,
+    #[serde(default)]
+    utc: String,
+    #[serde(default)]
+    waz: String,
+    #[serde(default)]
+    itu: String,
+    #[serde(default)]
+    lat: String,
+    #[serde(default)]
+    lon: String,
+    #[serde(default)]
+    adif: String
+}
+
+impl Default for Dxcc {
+    fn default() -> Dxcc {
+        Dxcc {
+            callsign: "".to_string(),
+            name: "".to_string(),
+            details: "".to_string(),
+            continent: "".to_string(),
+            utc: "".to_string(),
+            waz: "".to_string(),
+            itu: "".to_string(),
+            lat: "".to_string(),
+            lon: "".to_string(),
+            adif: "".to_string()
+        }
+    }
+}
+
+#[derive(Debug, Deserialize)]
 struct HamQTH {
     version: String,
     #[serde(default)]
     session: Session,
     #[serde(default)]
     search: Search,
+    #[serde(default)]
+    dxcc: Dxcc
 }
 
 pub fn session(username: &str, password: &str) -> Result<String, reqwest::Error> {
@@ -198,5 +241,22 @@ pub fn query(session_id: &str, callsign: &str) -> Result<(), reqwest::Error> {
     println!("\n{} (HamQTH)", hqth.search.callsign);
     println!("  Name: {}", hqth.search.adr_name);
     println!("  Location: {}, {}, {}", hqth.search.adr_city, hqth.search.us_state, hqth.search.adr_country);
+    Ok(())
+}
+
+pub fn dxcc(entity: &str) -> Result<(), reqwest::Error> {
+    let client = reqwest::Client::new();
+
+    let query_resp = client.get("https://www.hamqth.com/dxcc.php")
+        .query(&[("callsign", entity)])
+        .send()?
+        .text()?;
+
+    let hqth: HamQTH = from_str(&query_resp).unwrap();
+    println!("\n{} (HamQTH)", hqth.dxcc.adif);
+    println!("  Name: {}", hqth.dxcc.name);
+    println!("  ITU: {}", hqth.dxcc.itu);
+    println!("  UTC: {}", hqth.dxcc.utc);
+    println!("  Details: {}", hqth.dxcc.details);
     Ok(())
 }
