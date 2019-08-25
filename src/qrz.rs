@@ -267,7 +267,7 @@ pub fn set_session(key: String) -> std::io::Result<()> {
         Some(path) => path,
         None => panic!("error"),
     };
-    let session_path = format!("{}{}", home_dir.to_string_lossy(), "/.hrt.qrz.toml");
+    let session_path = format!("{}{}", home_dir.to_string_lossy(), "/.hrt.qrz");
 
     fs::write(&session_path, key)?;
     Ok(())
@@ -278,7 +278,7 @@ pub fn get_session() -> String {
         Some(path) => path,
         None => panic!("error"),
     };
-    let session_path = format!("{}{}", home_dir.to_string_lossy(), "/.hrt.qrz.toml");
+    let session_path = format!("{}{}", home_dir.to_string_lossy(), "/.hrt.qrz");
 
     if !Path::new(&session_path).exists() {
         let _s = match session() {

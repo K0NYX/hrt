@@ -4,20 +4,28 @@
 
 ## Config
 
-Copy the example [hrt.toml](hrt.toml) config file to the home directory on your system (i.e. `~/.hrt.toml`) and set the config values for the commands you plan to use.
+To get started, run the config generator:
+
+```bash
+hrt init
+```
+
+This will create a `.hrt.toml` file in your home directory and output the path to it. Open this file up with an editor (vim, nano, VS Code, etc.) and set the config values for the commands you plan to use.
 
 ## Commands
 
+To see a list of all available commands, simply run `hrt` without any arguments.
+
 ### Callsign lookup
 
-You will need to set your account info in `~/.hrt.toml` for [qrz](https://www.qrz.com) and/or [hamqth](https://www.hamqth.com).
+You will need to set your account info in `.hrt.toml` for [qrz](https://www.qrz.com) and/or [hamqth](https://www.hamqth.com).
 
 Lookup with QRZ:
-
 ```bash
 hrt call C4LLS1GN
 ```
 
+example output:
 ```
 C4LLS1GN (QRZ)
   Name: Nikola Tesla
@@ -26,11 +34,11 @@ C4LLS1GN (QRZ)
 ```
 
 Use alternative lookup source HamQTH:
-
 ```bash
 hrt call C4LLS1GN -s hamqth
 ```
 
+example output:
 ```
 c4lls1gn (HamQTH)
   Name: Nikola Tesla
@@ -41,13 +49,14 @@ Call command arguments will be added to allow returning additional information.
 
 ### DXCC lookup
 
-You will need to set your account info in `~/.hrt.toml` for [qrz](https://www.qrz.com). No account info needed for [hamqth](https://www.hamqth.com) DXCC lookups.
+You will need to set your account info in `.hrt.toml` for [qrz](https://www.qrz.com). No account info needed for [hamqth](https://www.hamqth.com) DXCC lookups.
 
 Lookup by entity code / adif number with QRZ:
 ```bash
 hrt dxcc 291
 ```
 
+example output:
 ```
 291 (QRZ)
   Name: United States
@@ -57,11 +66,11 @@ hrt dxcc 291
 ```
 
 Use alternative lookup source HamQTH:
-
 ```bash
 hrt dxcc 291 -s hamqth
 ```
 
+example output:
 ```
 291 (HamQTH)
   Name: United States
@@ -75,6 +84,7 @@ Lookup by callsign
 hrt dxcc C4LLS1GN
 ```
 
+example output:
 ```
 291 (QRZ)
   Country: United States
@@ -84,11 +94,11 @@ hrt dxcc C4LLS1GN
 ```
 
 Use alternative lookup source HamQTH:
-
 ```bash
 hrt dxcc C4LLS1GN -s hamqth
 ```
 
+example output:
 ```
 291 (HamQTH)
   Name: United States

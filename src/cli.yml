@@ -3,6 +3,8 @@ version: "0.1.0"
 author: Bryce Johnston, KE0TSN. <bryce@beaorn.com>
 about: Ham Radio related command line tools
 subcommands:
+    - init:
+        about: initialize empty .hrt.toml config file
     - call:
         about: callsign lookup
         args:
