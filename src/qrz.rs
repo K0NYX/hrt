@@ -169,12 +169,58 @@ impl Default for Callsign {
 }
 
 #[derive(Debug, Deserialize)]
+struct Dxcc {
+    #[serde(default)]
+    dxcc: String,
+    #[serde(default)]
+    cc: String,
+    #[serde(default)]
+    ccc: String,
+    #[serde(default)]
+    name: String,
+    #[serde(default)]
+    continent: String,
+    #[serde(default)]
+    ituzone: String,
+    #[serde(default)]
+    cqzone: String,
+    #[serde(default)]
+    timezone: String,
+    #[serde(default)]
+    lat: String,
+    #[serde(default)]
+    lon: String,
+    #[serde(default)]
+    notes: String
+}
+
+impl Default for Dxcc {
+    fn default() -> Dxcc {
+        Dxcc {
+            dxcc: "".to_string(),
+            cc: "".to_string(),
+            ccc: "".to_string(),
+            name: "".to_string(),
+            continent: "".to_string(),
+            ituzone: "".to_string(),
+            cqzone: "".to_string(),
+            timezone: "".to_string(),
+            lat: "".to_string(),
+            lon: "".to_string(),
+            notes: "".to_string()
+        }
+    }
+}
+
+#[derive(Debug, Deserialize)]
 struct QrzDatabase {
     version: String,
     #[serde(rename="Session")]
     session: Session,
     #[serde(rename="Callsign", default)]
     callsign: Callsign,
+    #[serde(rename="DXCC", default)]
+    dxcc: Dxcc
 }
 
 pub fn session(username: &str, password: &str) -> Result<String, reqwest::Error> {
@@ -203,5 +249,22 @@ pub fn query(key: &str, callsign: &str) -> Result<(), reqwest::Error> {
     println!("  Name: {} {}", qrzdb.callsign.fname, qrzdb.callsign.name);
     println!("  Location: {}, {}, {}", qrzdb.callsign.addr2, qrzdb.callsign.state, qrzdb.callsign.land);
     println!("  Class: {}", qrzdb.callsign.class);
+    Ok(())
+}
+
+pub fn dxcc(key: &str, entity: &str) -> Result<(), reqwest::Error> {
+    let client = reqwest::Client::new();
+
+    let query_resp = client.get("http://xmldata.qrz.com/xml/current/")
+        .query(&[("s", key), ("dxcc", entity)])
+        .send()?
+        .text()?;
+
+    let qrzdb: QrzDatabase = from_str(&query_resp).unwrap();
+    println!("\n{} (QRZ)", qrzdb.dxcc.dxcc);
+    println!("  Country: {}", qrzdb.dxcc.name);
+    println!("  ITU Zone: {}", qrzdb.dxcc.ituzone);
+    println!("  CQ Zone: {}", qrzdb.dxcc.cqzone);
+    println!("  UTC Timezone Offset: {}", qrzdb.dxcc.timezone);
     Ok(())
 }
