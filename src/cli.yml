@@ -1,0 +1,12 @@
+name: hrt
+version: "0.1.0"
+author: Bryce Johnston KE0TSN. <bryce@beaorn.com>
+about: Ham Radio related command line tools
+subcommands:
+    - call:
+        about: callsign lookup
+        args:
+            - CALLSIGN:
+                help: Sets the callsign to lookup
+                required: true
+                index: 1

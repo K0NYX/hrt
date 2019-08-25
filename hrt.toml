@@ -1,0 +1,13 @@
+# Set the default source for callsign lookups (qrz or hamqth)
+cs_default = "qrz"
+# QRZ Login - callsign lookups
+qrz_callsign = ""
+qrz_password = ""
+# HamQTH Login - alternative callsign lookups
+hamqth_callsign = ""
+hamqth_password = ""
+# QTH Location (use degrees)
+latitude = ""
+longitude = ""
+# Dark Sky API Key - weather
+darksky_api_key = ""
