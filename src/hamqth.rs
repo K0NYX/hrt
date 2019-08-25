@@ -246,8 +246,13 @@ pub fn session() -> Result<(), reqwest::Error> {
 
     let hqth: HamQTH = from_str(&query_resp).unwrap();
 
-    set_session(hqth.session.session_id);
-    Ok(())
+    if hqth.session.error != ""
+    {
+        panic!("ERROR! {}", hqth.session.error);
+    } else {
+        set_session(hqth.session.session_id);
+        Ok(())
+    }
 }
 
 pub fn set_session(key: String) -> std::io::Result<()> {
@@ -294,15 +299,15 @@ pub fn query(callsign: &str) -> Result<(), reqwest::Error> {
 
     let hqth: HamQTH = from_str(&query_resp).unwrap();
     
-    if hqth.session.error == "Wrong user name or password" {
-        panic!("Wrong HamQTH username or password!");
-    } else if hqth.session.error == "Session does not exist or expired" {
+    if hqth.session.error == "Session does not exist or expired" {
         let _s = match session() {
             Ok(k) => k,
             Err(_e) => panic!("error")
         };
         query(callsign)?;
         Ok(())
+    } else if hqth.session.error != "" {
+        panic!("ERROR! {}", hqth.session.error);
     } else {
         println!("\n{} (HamQTH)", hqth.search.callsign);
         println!("  Name: {}", hqth.search.adr_name);

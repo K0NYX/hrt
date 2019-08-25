@@ -253,8 +253,13 @@ pub fn session() -> Result<(), reqwest::Error> {
 
     let qrzdb: QrzDatabase = from_str(&query_resp).unwrap();
 
-    set_session(qrzdb.session.key);
-    Ok(())
+    if qrzdb.session.error != ""
+    {
+        panic!("ERROR! {}", qrzdb.session.error);
+    } else {
+        set_session(qrzdb.session.key);
+        Ok(())
+    }
 }
 
 pub fn set_session(key: String) -> std::io::Result<()> {
@@ -301,16 +306,15 @@ pub fn query(callsign: &str) -> Result<(), reqwest::Error> {
 
     let qrzdb: QrzDatabase = from_str(&query_resp).unwrap();
 
-    if qrzdb.session.error == "Username / password required" {
-        panic!("Wrong QRZ username or password!");
-    } else if qrzdb.session.error == "Session Timeout" {
+    if qrzdb.session.error == "Session Timeout" {
         let _s = match session() {
             Ok(k) => k,
             Err(_e) => panic!("error")
         };
-        
         query(callsign)?;
         Ok(())
+    } else if qrzdb.session.error != "" {
+        panic!("ERROR! {}", qrzdb.session.error);
     } else {
         println!("\n{} (QRZ)", qrzdb.callsign.call);
         println!("  Name: {} {}", qrzdb.callsign.fname, qrzdb.callsign.name);
@@ -332,7 +336,7 @@ pub fn dxcc(entity: &str) -> Result<(), reqwest::Error> {
 
     let qrzdb: QrzDatabase = from_str(&query_resp).unwrap();
 
-    if qrzdb.session.error == "Username / password required" || qrzdb.session.error == "Session Timeout" {
+    if qrzdb.session.error == "Session Timeout" {
         let _key = match session() {
             Ok(k) => k,
             Err(_e) => panic!("error")
@@ -340,6 +344,8 @@ pub fn dxcc(entity: &str) -> Result<(), reqwest::Error> {
 
         query(entity)?;
         Ok(())
+    } else if qrzdb.session.error != "" {
+        panic!("ERROR! {}", qrzdb.session.error);
     } else {
         println!("\n{} (QRZ)", qrzdb.dxcc.dxcc);
         println!("  Name: {}", qrzdb.dxcc.name);

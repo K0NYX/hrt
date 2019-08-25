@@ -42,6 +42,9 @@ fn main() {
             
         }
     }
+    else {
+        App::from_yaml(yaml).print_help();
+    }
 }
 
 fn qrz_call(callsign: &str, query_type: &str) {
