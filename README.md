@@ -1,8 +1,7 @@
 # hrt - ham radio terminal
 
-[![Actions Status](https://github.com/beaorn/hrt/workflows/Rust/badge.svg)](https://github.com/beaorn/hrt/actions)
-[![](https://img.shields.io/crates/l/hrt.svg?colorB=22ba4c)](https://crates.io/crates/hrt)
-![](https://img.shields.io/crates/v/hrt.svg?colorB=00aa88)
+![Actions Status](https://github.com/beaorn/hrt/workflows/Rust/badge.svg)
+[![](https://img.shields.io/crates/v/hrt.svg?colorB=00aa88)](https://crates.io/crates/hrt)
 
 `hrt` is a simple terminal based application aimed at providing various tools for Amateur Radio operators.
 
