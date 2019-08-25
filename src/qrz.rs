@@ -1,6 +1,12 @@
+extern crate config;
+extern crate dirs;
 extern crate reqwest;
 
 use serde_xml_rs::from_str;
+use std::path::Path;
+use std::io::prelude::*;
+use std::fs;
+use std::fs::File;
 
 #[derive(Debug, Deserialize)]
 struct Session {
@@ -13,7 +19,9 @@ struct Session {
     #[serde(rename="GMTime", default)]
     gmtime: String,
     #[serde(rename="Remark", default)]
-    remark: String
+    remark: String,
+    #[serde(rename="Error", default)]
+    error: String
 }
 
 impl Default for Session {
@@ -23,7 +31,8 @@ impl Default for Session {
             count: "".to_string(),
             sub_exp: "".to_string(),
             gmtime: "".to_string(),
-            remark: "".to_string()
+            remark: "".to_string(),
+            error: "".to_string(),
         }
     }
 }
@@ -223,7 +232,18 @@ struct QrzDatabase {
     dxcc: Dxcc
 }
 
-pub fn session(username: &str, password: &str) -> Result<String, reqwest::Error> {
+pub fn session() -> Result<(), reqwest::Error> {
+    let home_dir = match dirs::home_dir() {
+        Some(path) => path,
+        None => panic!("error"),
+    };
+
+    let config_path = format!("{}{}", home_dir.to_string_lossy(), "/.hrt.toml");
+    let mut settings = config::Config::default();
+    settings.merge(config::File::from(Path::new(&config_path))).unwrap();
+    let username = settings.get_str("qrz_callsign").unwrap();
+    let password = settings.get_str("qrz_password").unwrap();
+
     let client = reqwest::Client::new();
     let params = [("username", username), ("password", password)];
     let query_resp = client.post("https://xmldata.qrz.com/xml/current/")
@@ -233,38 +253,99 @@ pub fn session(username: &str, password: &str) -> Result<String, reqwest::Error>
 
     let qrzdb: QrzDatabase = from_str(&query_resp).unwrap();
 
-    Ok(qrzdb.session.key)
+    set_session(qrzdb.session.key);
+    Ok(())
 }
 
-pub fn query(key: &str, callsign: &str) -> Result<(), reqwest::Error> {
+pub fn set_session(key: String) -> std::io::Result<()> {
+    let home_dir = match dirs::home_dir() {
+        Some(path) => path,
+        None => panic!("error"),
+    };
+    let session_path = format!("{}{}", home_dir.to_string_lossy(), "/.hrt.qrz.toml");
+
+    fs::write(&session_path, key)?;
+    Ok(())
+}
+
+pub fn get_session() -> String {
+    let home_dir = match dirs::home_dir() {
+        Some(path) => path,
+        None => panic!("error"),
+    };
+    let session_path = format!("{}{}", home_dir.to_string_lossy(), "/.hrt.qrz.toml");
+
+    if !Path::new(&session_path).exists() {
+        let _s = match session() {
+            Ok(k) => k,
+            Err(_e) => panic!("error")
+        };
+    }
+
+    let mut file = File::open(&session_path).expect("Unable to open the file");
+    let mut session_id = String::new();
+    file.read_to_string(&mut session_id).expect("Unable to read the file");
+
+    return session_id;
+}
+
+pub fn query(callsign: &str) -> Result<(), reqwest::Error> {
+    let session_id = get_session();
+
     let client = reqwest::Client::new();
 
     let query_resp = client.get("http://xmldata.qrz.com/xml/current/")
-        .query(&[("s", key), ("callsign", callsign)])
+        .query(&[("s", session_id), ("callsign", callsign.to_string())])
         .send()?
         .text()?;
 
     let qrzdb: QrzDatabase = from_str(&query_resp).unwrap();
-    println!("\n{} (QRZ)", qrzdb.callsign.call);
-    println!("  Name: {} {}", qrzdb.callsign.fname, qrzdb.callsign.name);
-    println!("  Location: {}, {}, {}", qrzdb.callsign.addr2, qrzdb.callsign.state, qrzdb.callsign.land);
-    println!("  Class: {}", qrzdb.callsign.class);
-    Ok(())
+
+    if qrzdb.session.error == "Username / password required" {
+        panic!("Wrong QRZ username or password!");
+    } else if qrzdb.session.error == "Session Timeout" {
+        let _s = match session() {
+            Ok(k) => k,
+            Err(_e) => panic!("error")
+        };
+        
+        query(callsign)?;
+        Ok(())
+    } else {
+        println!("\n{} (QRZ)", qrzdb.callsign.call);
+        println!("  Name: {} {}", qrzdb.callsign.fname, qrzdb.callsign.name);
+        println!("  Location: {}, {}, {}", qrzdb.callsign.addr2, qrzdb.callsign.state, qrzdb.callsign.land);
+        println!("  Class: {}", qrzdb.callsign.class);
+        Ok(())
+    }
 }
 
-pub fn dxcc(key: &str, entity: &str) -> Result<(), reqwest::Error> {
+pub fn dxcc(entity: &str) -> Result<(), reqwest::Error> {
+    let session_id = get_session();
+
     let client = reqwest::Client::new();
 
     let query_resp = client.get("http://xmldata.qrz.com/xml/current/")
-        .query(&[("s", key), ("dxcc", entity)])
+        .query(&[("s", session_id), ("dxcc", entity.to_string())])
         .send()?
         .text()?;
 
     let qrzdb: QrzDatabase = from_str(&query_resp).unwrap();
-    println!("\n{} (QRZ)", qrzdb.dxcc.dxcc);
-    println!("  Name: {}", qrzdb.dxcc.name);
-    println!("  ITU: {}", qrzdb.dxcc.ituzone);
-    println!("  CQ: {}", qrzdb.dxcc.cqzone);
-    println!("  UTC: {}", qrzdb.dxcc.timezone);
-    Ok(())
+
+    if qrzdb.session.error == "Username / password required" || qrzdb.session.error == "Session Timeout" {
+        let _key = match session() {
+            Ok(k) => k,
+            Err(_e) => panic!("error")
+        };
+
+        query(entity)?;
+        Ok(())
+    } else {
+        println!("\n{} (QRZ)", qrzdb.dxcc.dxcc);
+        println!("  Name: {}", qrzdb.dxcc.name);
+        println!("  ITU: {}", qrzdb.dxcc.ituzone);
+        println!("  CQ: {}", qrzdb.dxcc.cqzone);
+        println!("  UTC: {}", qrzdb.dxcc.timezone);
+        Ok(())
+    }
 }

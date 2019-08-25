@@ -12,6 +12,8 @@ Copy the example [hrt.toml](hrt.toml) config file to the home directory on your 
 
 You will need to set your account info in `~/.hrt.toml` for [qrz](https://www.qrz.com) and/or [hamqth](https://www.hamqth.com) before attempting to do callsign lookups.
 
+Lookup with QRZ:
+
 ```bash
 hrt call C4LLS1GN
 ```
@@ -23,7 +25,7 @@ C4LLS1GN (QRZ)
   Class: E
 ```
 
-Use alternative lookup source instead of the default specified in config:
+Use alternative lookup source HamQTH:
 
 ```bash
 hrt call C4LLS1GN -s hamqth
@@ -41,8 +43,7 @@ Call command arguments will be added to allow returning additional information.
 
 You will need to set your account info in `~/.hrt.toml` for [qrz](https://www.qrz.com) and/or [hamqth](https://www.hamqth.com) before attempting to do DXCC lookups.
 
-
-DXCC lookup by entity code / adif number
+Lookup by entity code / adif number with QRZ:
 ```bash
 hrt dxcc 291
 ```
@@ -55,7 +56,7 @@ hrt dxcc 291
   UTC: -5
 ```
 
-Use alternative lookup source instead of the default specified in config:
+Use alternative lookup source HamQTH:
 
 ```bash
 hrt dxcc 291 -s hamqth
@@ -69,7 +70,7 @@ hrt dxcc 291 -s hamqth
   Details:
 ```
 
-DXCC lookup by callsign
+Lookup by callsign
 ```bash
 hrt dxcc C4LLS1GN
 ```
@@ -82,7 +83,7 @@ hrt dxcc C4LLS1GN
   UTC: -5
 ```
 
-Use alternative lookup source instead of the default specified in config:
+Use alternative lookup source HamQTH:
 
 ```bash
 hrt dxcc C4LLS1GN -s hamqth

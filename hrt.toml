@@ -1,5 +1,3 @@
-# Set the default source for callsign lookups (qrz or hamqth)
-cs_default = "qrz"
 # QRZ Login - callsign lookup source
 qrz_callsign = ""
 qrz_password = ""

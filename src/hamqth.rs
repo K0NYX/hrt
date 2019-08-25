@@ -1,17 +1,26 @@
+extern crate config;
+extern crate dirs;
 extern crate reqwest;
 
 use serde_xml_rs::from_str;
+use std::path::Path;
+use std::io::prelude::*;
+use std::fs;
+use std::fs::File;
 
 #[derive(Debug, Deserialize)]
 struct Session {
     #[serde(default)]
-    session_id: String
+    session_id: String,
+    #[serde(default)]
+    error: String
 }
 
 impl Default for Session {
     fn default() -> Session {
         Session {
-            session_id: "".to_string()
+            session_id: "".to_string(),
+            error: "".to_string(),
         }
     }
 }
@@ -217,7 +226,18 @@ struct HamQTH {
     dxcc: Dxcc
 }
 
-pub fn session(username: &str, password: &str) -> Result<String, reqwest::Error> {
+pub fn session() -> Result<(), reqwest::Error> {
+    let home_dir = match dirs::home_dir() {
+        Some(path) => path,
+        None => panic!("error"),
+    };
+
+    let config_path = format!("{}{}", home_dir.to_string_lossy(), "/.hrt.toml");
+    let mut settings = config::Config::default();
+    settings.merge(config::File::from(Path::new(&config_path))).unwrap();
+    let username = settings.get_str("hamqth_callsign").unwrap();
+    let password = settings.get_str("hamqth_password").unwrap();
+
     let client = reqwest::Client::new();
     let query_resp = client.get("https://www.hamqth.com/xml.php")
         .query(&[("u", username), ("p", password)])
@@ -226,22 +246,69 @@ pub fn session(username: &str, password: &str) -> Result<String, reqwest::Error>
 
     let hqth: HamQTH = from_str(&query_resp).unwrap();
 
-    Ok(hqth.session.session_id)
+    set_session(hqth.session.session_id);
+    Ok(())
 }
 
-pub fn query(session_id: &str, callsign: &str) -> Result<(), reqwest::Error> {
+pub fn set_session(key: String) -> std::io::Result<()> {
+    let home_dir = match dirs::home_dir() {
+        Some(path) => path,
+        None => panic!("error"),
+    };
+    let session_path = format!("{}{}", home_dir.to_string_lossy(), "/.hrt.hamqth.toml");
+
+    fs::write(&session_path, key)?;
+    Ok(())
+}
+
+pub fn get_session() -> String {
+    let home_dir = match dirs::home_dir() {
+        Some(path) => path,
+        None => panic!("error"),
+    };
+    let session_path = format!("{}{}", home_dir.to_string_lossy(), "/.hrt.hamqth.toml");
+
+    if !Path::new(&session_path).exists() {
+        let _s = match session() {
+            Ok(k) => k,
+            Err(_e) => panic!("error")
+        };
+    }
+
+    let mut file = File::open(&session_path).expect("Unable to open the file");
+    let mut session_id = String::new();
+    file.read_to_string(&mut session_id).expect("Unable to read the file");
+
+    return session_id;
+}
+
+pub fn query(callsign: &str) -> Result<(), reqwest::Error> {
+    let session_id = get_session();
+    
     let client = reqwest::Client::new();
 
     let query_resp = client.get("https://www.hamqth.com/xml.php")
-        .query(&[("id", session_id), ("callsign", callsign), ("prg", "hrt")])
+        .query(&[("id", session_id), ("callsign", callsign.to_string()), ("prg", "hrt".to_string())])
         .send()?
         .text()?;
 
     let hqth: HamQTH = from_str(&query_resp).unwrap();
-    println!("\n{} (HamQTH)", hqth.search.callsign);
-    println!("  Name: {}", hqth.search.adr_name);
-    println!("  Location: {}, {}, {}", hqth.search.adr_city, hqth.search.us_state, hqth.search.adr_country);
-    Ok(())
+    
+    if hqth.session.error == "Wrong user name or password" {
+        panic!("Wrong HamQTH username or password!");
+    } else if hqth.session.error == "Session does not exist or expired" {
+        let _s = match session() {
+            Ok(k) => k,
+            Err(_e) => panic!("error")
+        };
+        query(callsign)?;
+        Ok(())
+    } else {
+        println!("\n{} (HamQTH)", hqth.search.callsign);
+        println!("  Name: {}", hqth.search.adr_name);
+        println!("  Location: {}, {}, {}", hqth.search.adr_city, hqth.search.us_state, hqth.search.adr_country);
+        Ok(())
+    }
 }
 
 pub fn dxcc(entity: &str) -> Result<(), reqwest::Error> {
