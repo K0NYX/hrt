@@ -197,6 +197,6 @@ pub fn query(session_id: &str, callsign: &str) -> Result<(), reqwest::Error> {
     let hqth: HamQTH = from_str(&query_resp).unwrap();
     println!("\n{} (HamQTH)", hqth.search.callsign);
     println!("  Name: {}", hqth.search.adr_name);
-    println!("  Location: {}, {}", hqth.search.adr_city, hqth.search.adr_country);
+    println!("  Location: {}, {}, {}", hqth.search.adr_city, hqth.search.us_state, hqth.search.adr_country);
     Ok(())
 }

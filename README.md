@@ -4,38 +4,38 @@
 
 ## Config
 
-Copy the example [hrt.toml](hrt.toml) config file to `~/.hrt.toml` and set the config values for the commands you plan to use.
+Copy the example [hrt.toml](hrt.toml) config file to the home directory on your system (i.e. `~/.hrt.toml`) and set the config values for the commands you plan to use.
 
 ## Commands
 
 ### Callsign lookup
 
-You will need to set the default lookup source and its respective account info in config file before attempting to do callsign lookups.
+You will need to set your account info in `~/.hrt.toml` for [qrz](https://www.qrz.com) and/or [hamqth](https://www.hamqth.com) before attempting to do callsign lookups.
 
 ```bash
-hrt call KE0TSN
+hrt call C4LLS1GN
 ```
 
 ```
-KE0TSN (QRZ)
-  Name: Bryce D Johnston
-  Location: Saint George, KS, United States
+C4LLS1GN (QRZ)
+  Name: Bryce Johnston
+  Location: Manhattan, KS, United States
   Class: G
 ```
 
 Use alternative lookup source than the default specified in config:
 
 ```bash
-hrt call KE0TSN -s hamqth
+hrt call C4LLS1GN -s hamqth
 ```
 
 ```
-ke0tsn (HamQTH)
-  Name: Bryce D Johnston
-  Location: Saint George, United States
+calls1gn (HamQTH)
+  Name: Bryce Johnston
+  Location: Manhattan, KS, United States
 ```
 
-Additional call command flags will be added to allow returning additional information.
+Additional call command arguments will be added to allow returning additional information.
 
 ## Contributing
 
