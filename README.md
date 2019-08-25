@@ -10,7 +10,7 @@ Copy the example [hrt.toml](hrt.toml) config file to the home directory on your 
 
 ### Callsign lookup
 
-You will need to set your account info in `~/.hrt.toml` for [qrz](https://www.qrz.com) and/or [hamqth](https://www.hamqth.com) before attempting to do callsign lookups.
+You will need to set your account info in `~/.hrt.toml` for [qrz](https://www.qrz.com) and/or [hamqth](https://www.hamqth.com).
 
 Lookup with QRZ:
 
@@ -41,7 +41,7 @@ Call command arguments will be added to allow returning additional information.
 
 ### DXCC lookup
 
-You will need to set your account info in `~/.hrt.toml` for [qrz](https://www.qrz.com) and/or [hamqth](https://www.hamqth.com) before attempting to do DXCC lookups.
+You will need to set your account info in `~/.hrt.toml` for [qrz](https://www.qrz.com). No account info needed for [hamqth](https://www.hamqth.com) DXCC lookups.
 
 Lookup by entity code / adif number with QRZ:
 ```bash
