@@ -16,3 +16,16 @@ subcommands:
                 value_name: SOURCE
                 help: Sets callsign lookup source (qrz or hamqth)
                 takes_value: true
+    - dxcc:
+        about: dxcc lookup
+        args:
+            - ENTITY:
+                help: Sets the dxcc callsign or entity code to lookup
+                required: true
+                index: 1
+            - source:
+                short: s
+                long: source
+                value_name: SOURCE
+                help: Sets dxcc lookup source (qrz or hamqth)
+                takes_value: true

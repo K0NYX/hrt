@@ -23,19 +23,40 @@ C4LLS1GN (QRZ)
   Class: G
 ```
 
-Use alternative lookup source than the default specified in config:
+Use alternative lookup source instead of the default specified in config:
 
 ```bash
 hrt call C4LLS1GN -s hamqth
 ```
 
 ```
-calls1gn (HamQTH)
+c4lls1gn (HamQTH)
   Name: Bryce Johnston
   Location: Manhattan, KS, United States
 ```
 
-Additional call command arguments will be added to allow returning additional information.
+Call command arguments will be added to allow returning additional information.
+
+### DXCC lookup
+
+You will need to set your account info in `~/.hrt.toml` for [qrz](https://www.qrz.com) and/or [hamqth](https://www.hamqth.com) before attempting to do DXCC lookups.
+
+
+DXCC lookup by callsign
+```bash
+hrt dxcc C4LLS1GN
+```
+
+DXCC lookup by entity code / adif number
+```bash
+hrt dxcc 291
+```
+
+Use alternative lookup source instead of the default specified in config:
+
+```bash
+hrt dxcc C4LLS1GN -s hamqth
+```
 
 ## Contributing
 
