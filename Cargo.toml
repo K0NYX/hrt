@@ -1,6 +1,7 @@
 [package]
 authors = ["Bryce Johnston <bryce@beaorn.com>"]
 categories = ["command-line-utilities"]
+keywords = ["ham radio", "amateur radio", "callsign", "qrz", "hamqth"]
 description = "Ham Radio related command line tools"
 homepage = "https://github.com/beaorn/hrt"
 license = "MIT"

@@ -1,16 +1,28 @@
 # hrt - ham radio terminal
 
+[![Actions Status](https://github.com/beaorn/hrt/workflows/Rust/badge.svg)](https://github.com/beaorn/hrt/actions)
+[![](https://img.shields.io/crates/l/hrt.svg?colorB=22ba4c)](https://crates.io/crates/hrt)
+![](https://img.shields.io/crates/v/hrt.svg?colorB=00aa88)
+
 `hrt` is a simple terminal based application aimed at providing various tools for Amateur Radio operators.
+
+## Installation
+
+Currently while in early development stage you will need [Rust and Cargo installed](https://www.rust-lang.org/tools/install) to run `hrt`
+
+```bash
+cargo install hrt
+```
 
 ## Config
 
-To get started, run the config generator:
+After installing, run the config generator:
 
 ```bash
 hrt init
 ```
 
-This will create a `.hrt.toml` file in your home directory and output the path to it. Open this file up with an editor (vim, nano, VS Code, etc.) and set the config values for the commands you plan to use.
+This will create a `.hrt.toml` file in your home directory and output the path to it. Open this file up with an editor (vim, nano, notepad, VS Code, etc.) and set the config values for the commands you plan to use.
 
 ## Commands
 
