@@ -10,7 +10,7 @@
 Currently while in early development stage you will need [Rust and Cargo installed](https://www.rust-lang.org/tools/install) to run `hrt`
 
 ```bash
-cargo install hrt
+cargo install hrt --force
 ```
 
 ## Config
@@ -29,7 +29,7 @@ To see a list of all available commands, simply run `hrt` without any arguments.
 
 ### Callsign lookup
 
-You will need to set your account info in `.hrt.toml` for [qrz](https://www.qrz.com) and/or [hamqth](https://www.hamqth.com).
+You will need to set your account info in `.hrt.toml` for [QRZ](https://www.qrz.com) and/or [HamQTH](https://www.hamqth.com).
 
 Lookup with QRZ:
 ```bash

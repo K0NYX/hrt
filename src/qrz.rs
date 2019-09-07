@@ -313,6 +313,9 @@ pub fn query(callsign: &str) -> Result<(), reqwest::Error> {
         };
         query(callsign)?;
         Ok(())
+    } else if qrzdb.session.error.contains("Not found") {
+        println!("QRZ - {}", qrzdb.session.error);
+        Ok(())
     } else if qrzdb.session.error != "" {
         panic!("ERROR! {}", qrzdb.session.error);
     } else {
@@ -359,6 +362,9 @@ pub fn dxcc(entity: &str) -> Result<(), reqwest::Error> {
         };
 
         dxcc(entity)?;
+        Ok(())
+    } else if qrzdb.session.error.contains("information for") {
+        println!("QRZ - {}", qrzdb.session.error);
         Ok(())
     } else if qrzdb.session.error != "" {
         panic!("ERROR! {}", qrzdb.session.error);

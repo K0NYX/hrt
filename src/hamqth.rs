@@ -306,6 +306,9 @@ pub fn query(callsign: &str) -> Result<(), reqwest::Error> {
         };
         query(callsign)?;
         Ok(())
+    } else if hqth.session.error.contains("not found") {
+        println!("HamQTH - {}", hqth.session.error);
+        Ok(())
     } else if hqth.session.error != "" {
         panic!("ERROR! {}", hqth.session.error);
     } else {
