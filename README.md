@@ -33,30 +33,32 @@ You will need to set your account info in `.hrt.toml` for [qrz](https://www.qrz.
 
 Lookup with QRZ:
 ```bash
-hrt call C4LLS1GN
+hrt call K0NYX
 ```
 
 example output:
 ```
-C4LLS1GN (QRZ)
-  Name: Nikola Tesla
-  Location: Colorado Springs, CO, United States
-  Class: E
+K0NYX (QRZ)
+  Name: Bryce Johnston
+  Email: bryce@beaorn.com
+  Address: 100 Antenna Way
+  Location: Manhattan, KS 66502
+  Country: United States
+  Class: G
 ```
 
 Use alternative lookup source HamQTH:
 ```bash
-hrt call C4LLS1GN -s hamqth
+hrt call K0NYX -s hamqth
 ```
 
 example output:
 ```
-c4lls1gn (HamQTH)
-  Name: Nikola Tesla
-  Location: Colorado Springs, CO, United States
+K0NYX (HamQTH)
+  Name: Bryce Johnston
+  Location: Manhattan, KS
+  Country United States
 ```
-
-Call command arguments will be added to allow returning additional information.
 
 ### DXCC lookup
 
@@ -92,7 +94,7 @@ example output:
 
 Lookup by callsign
 ```bash
-hrt dxcc C4LLS1GN
+hrt dxcc K0NYX
 ```
 
 example output:
@@ -106,7 +108,7 @@ example output:
 
 Use alternative lookup source HamQTH:
 ```bash
-hrt dxcc C4LLS1GN -s hamqth
+hrt dxcc K0NYX -s hamqth
 ```
 
 example output:
