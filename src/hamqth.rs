@@ -306,11 +306,9 @@ pub fn query(callsign: &str) -> Result<(), reqwest::Error> {
         };
         query(callsign)?;
         Ok(())
-    } else if hqth.session.error.contains("not found") {
+    } else if hqth.session.error != "" {
         println!("HamQTH - {}", hqth.session.error);
         Ok(())
-    } else if hqth.session.error != "" {
-        panic!("ERROR! {}", hqth.session.error);
     } else {
         println!("\n{} (HamQTH)", hqth.search.callsign.to_uppercase());
         println!("  Name: {}", hqth.search.adr_name);

@@ -1,5 +1,5 @@
 name: hrt
-version: "0.1.2"
+version: "0.1.3"
 author: Bryce Johnston, K0NYX. <bryce@beaorn.com>
 about: Ham Radio related command line tools
 subcommands:

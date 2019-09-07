@@ -40,11 +40,12 @@ example output:
 ```
 K0NYX (QRZ)
   Name: Bryce Johnston
+  Aliases: KE0TSN
   Email: bryce@beaorn.com
   Address: 100 Antenna Way
   Location: Manhattan, KS 66502
   Country: United States
-  Class: G
+  Class: General
 ```
 
 Use alternative lookup source HamQTH:

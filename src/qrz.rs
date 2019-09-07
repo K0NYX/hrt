@@ -294,6 +294,15 @@ pub fn get_session() -> String {
     return session_id;
 }
 
+pub fn license(abbr: &str) -> &str {
+    match abbr {
+        "T" => "Technician",
+        "G" => "General",
+        "E" => "Extra",
+        _ => abbr
+    }
+}
+
 pub fn query(callsign: &str) -> Result<(), reqwest::Error> {
     let session_id = get_session();
 
@@ -313,14 +322,18 @@ pub fn query(callsign: &str) -> Result<(), reqwest::Error> {
         };
         query(callsign)?;
         Ok(())
-    } else if qrzdb.session.error.contains("Not found") {
+    } else if qrzdb.session.error != "" {
         println!("QRZ - {}", qrzdb.session.error);
         Ok(())
-    } else if qrzdb.session.error != "" {
-        panic!("ERROR! {}", qrzdb.session.error);
     } else {
         println!("\n{} (QRZ)", qrzdb.callsign.call);
         println!("  Name: {} {}", qrzdb.callsign.fname, qrzdb.callsign.name);
+        if !qrzdb.callsign.p_call.is_empty() {
+            println!("  Prev Callsign: {}", qrzdb.callsign.p_call);
+        }
+        if !qrzdb.callsign.aliases.is_empty() {
+            println!("  Aliases: {}", qrzdb.callsign.aliases);
+        }
         if !qrzdb.callsign.email.is_empty() {
             println!("  Email: {}", qrzdb.callsign.email);
         }
@@ -337,7 +350,7 @@ pub fn query(callsign: &str) -> Result<(), reqwest::Error> {
         }
         println!("  Country: {}", qrzdb.callsign.land);
         if !qrzdb.callsign.class.is_empty() {
-            println!("  Class: {}", qrzdb.callsign.class);
+            println!("  Class: {}", license(&qrzdb.callsign.class));
         }
         Ok(())
     }
@@ -363,11 +376,9 @@ pub fn dxcc(entity: &str) -> Result<(), reqwest::Error> {
 
         dxcc(entity)?;
         Ok(())
-    } else if qrzdb.session.error.contains("information for") {
+    } else if qrzdb.session.error != "" {
         println!("QRZ - {}", qrzdb.session.error);
         Ok(())
-    } else if qrzdb.session.error != "" {
-        panic!("ERROR! {}", qrzdb.session.error);
     } else {
         println!("\n{} (QRZ)", qrzdb.dxcc.dxcc);
         println!("  Name: {}", qrzdb.dxcc.name);
