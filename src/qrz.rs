@@ -318,8 +318,24 @@ pub fn query(callsign: &str) -> Result<(), reqwest::Error> {
     } else {
         println!("\n{} (QRZ)", qrzdb.callsign.call);
         println!("  Name: {} {}", qrzdb.callsign.fname, qrzdb.callsign.name);
-        println!("  Location: {}, {}, {}", qrzdb.callsign.addr2, qrzdb.callsign.state, qrzdb.callsign.land);
-        println!("  Class: {}", qrzdb.callsign.class);
+        if !qrzdb.callsign.email.is_empty() {
+            println!("  Email: {}", qrzdb.callsign.email);
+        }
+        if !qrzdb.callsign.addr1.is_empty() {
+            println!("  Address: {}", qrzdb.callsign.addr1);
+        }
+        if !qrzdb.callsign.addr2.is_empty() {
+            if !qrzdb.callsign.state.is_empty() {
+                println!("  Location: {}, {} {}", qrzdb.callsign.addr2, qrzdb.callsign.state, qrzdb.callsign.zip);
+            }
+            else {
+                println!("  Location: {}", qrzdb.callsign.addr2);
+            }
+        }
+        println!("  Country: {}", qrzdb.callsign.land);
+        if !qrzdb.callsign.class.is_empty() {
+            println!("  Class: {}", qrzdb.callsign.class);
+        }
         Ok(())
     }
 }
@@ -342,7 +358,7 @@ pub fn dxcc(entity: &str) -> Result<(), reqwest::Error> {
             Err(_e) => panic!("error")
         };
 
-        query(entity)?;
+        dxcc(entity)?;
         Ok(())
     } else if qrzdb.session.error != "" {
         panic!("ERROR! {}", qrzdb.session.error);

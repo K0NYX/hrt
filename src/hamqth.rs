@@ -309,9 +309,23 @@ pub fn query(callsign: &str) -> Result<(), reqwest::Error> {
     } else if hqth.session.error != "" {
         panic!("ERROR! {}", hqth.session.error);
     } else {
-        println!("\n{} (HamQTH)", hqth.search.callsign);
+        println!("\n{} (HamQTH)", hqth.search.callsign.to_uppercase());
         println!("  Name: {}", hqth.search.adr_name);
-        println!("  Location: {}, {}, {}", hqth.search.adr_city, hqth.search.us_state, hqth.search.adr_country);
+        if !hqth.search.email.is_empty() {
+            println!("  Email: {}", hqth.search.email);
+        }
+        if !hqth.search.adr_street1.is_empty() {
+            println!("  Address: {}", hqth.search.adr_street1);
+        }
+        if !hqth.search.adr_city.is_empty() {
+            if !hqth.search.us_state.is_empty() {
+                println!("  Location: {}, {} {}", hqth.search.adr_city, hqth.search.us_state, hqth.search.adr_zip);
+            }
+            else {
+                println!("  Location: {}", hqth.search.adr_city);
+            }
+        }
+        println!("  Country: {}", hqth.search.adr_country);
         Ok(())
     }
 }

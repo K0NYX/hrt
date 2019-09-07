@@ -1,6 +1,6 @@
 name: hrt
 version: "0.1.0"
-author: Bryce Johnston, KE0TSN. <bryce@beaorn.com>
+author: Bryce Johnston, K0NYX. <bryce@beaorn.com>
 about: Ham Radio related command line tools
 subcommands:
     - init:
