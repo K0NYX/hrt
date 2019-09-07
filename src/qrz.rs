@@ -1,12 +1,16 @@
 extern crate config;
 extern crate dirs;
+extern crate prettytable;
 extern crate reqwest;
 
+use prettytable::{Table, Row, Cell};
 use serde_xml_rs::from_str;
 use std::path::Path;
 use std::io::prelude::*;
 use std::fs;
 use std::fs::File;
+
+
 
 #[derive(Debug, Deserialize)]
 struct Session {
@@ -232,7 +236,7 @@ struct QrzDatabase {
     dxcc: Dxcc
 }
 
-pub fn session() -> Result<(), reqwest::Error> {
+fn session() -> Result<(), reqwest::Error> {
     let home_dir = match dirs::home_dir() {
         Some(path) => path,
         None => panic!("error"),
@@ -262,7 +266,7 @@ pub fn session() -> Result<(), reqwest::Error> {
     }
 }
 
-pub fn set_session(key: String) -> std::io::Result<()> {
+fn set_session(key: String) -> std::io::Result<()> {
     let home_dir = match dirs::home_dir() {
         Some(path) => path,
         None => panic!("error"),
@@ -273,7 +277,7 @@ pub fn set_session(key: String) -> std::io::Result<()> {
     Ok(())
 }
 
-pub fn get_session() -> String {
+fn get_session() -> String {
     let home_dir = match dirs::home_dir() {
         Some(path) => path,
         None => panic!("error"),
@@ -294,7 +298,7 @@ pub fn get_session() -> String {
     return session_id;
 }
 
-pub fn license(abbr: &str) -> &str {
+fn license(abbr: &str) -> &str {
     match abbr {
         "T" => "Technician",
         "G" => "General",
@@ -315,6 +319,8 @@ pub fn query(callsign: &str) -> Result<(), reqwest::Error> {
 
     let qrzdb: QrzDatabase = from_str(&query_resp).unwrap();
 
+    let mut table = Table::new();
+
     if qrzdb.session.error == "Session Timeout" || qrzdb.session.error == "Username / password required" {
         let _s = match session() {
             Ok(k) => k,
@@ -323,35 +329,65 @@ pub fn query(callsign: &str) -> Result<(), reqwest::Error> {
         query(callsign)?;
         Ok(())
     } else if qrzdb.session.error != "" {
-        println!("QRZ - {}", qrzdb.session.error);
+        table.add_row(Row::new(vec![
+            Cell::new("ERROR"), 
+            Cell::new(&qrzdb.session.error)]));
+        
+        println!("");
+        table.printstd();
+        println!("Source: QRZ\n");
         Ok(())
     } else {
-        println!("\n{} (QRZ)", qrzdb.callsign.call);
-        println!("  Name: {} {}", qrzdb.callsign.fname, qrzdb.callsign.name);
+        table.add_row(Row::new(vec![
+            Cell::new("Callsign"), 
+            Cell::new(&qrzdb.callsign.call)]));
+        table.add_row(Row::new(vec![
+            Cell::new("Name"), 
+            Cell::new(&format!("{} {}", qrzdb.callsign.fname, qrzdb.callsign.name))]));
         if !qrzdb.callsign.p_call.is_empty() {
-            println!("  Prev Callsign: {}", qrzdb.callsign.p_call);
+            table.add_row(Row::new(vec![
+                Cell::new("Prev Callsign"), 
+                Cell::new(&qrzdb.callsign.p_call)]));
         }
         if !qrzdb.callsign.aliases.is_empty() {
-            println!("  Aliases: {}", qrzdb.callsign.aliases);
+            table.add_row(Row::new(vec![
+                Cell::new("Aliases"), 
+                Cell::new(&qrzdb.callsign.aliases)]));
         }
         if !qrzdb.callsign.email.is_empty() {
-            println!("  Email: {}", qrzdb.callsign.email);
+            table.add_row(Row::new(vec![
+                Cell::new("Email"), 
+                Cell::new(&qrzdb.callsign.email)]));
         }
         if !qrzdb.callsign.addr1.is_empty() {
-            println!("  Address: {}", qrzdb.callsign.addr1);
+            table.add_row(Row::new(vec![
+                Cell::new("Address"), 
+                Cell::new(&qrzdb.callsign.addr1)]));
         }
         if !qrzdb.callsign.addr2.is_empty() {
             if !qrzdb.callsign.state.is_empty() {
-                println!("  Location: {}, {} {}", qrzdb.callsign.addr2, qrzdb.callsign.state, qrzdb.callsign.zip);
+                table.add_row(Row::new(vec![
+                    Cell::new("Location"), 
+                    Cell::new(&format!("{}, {} {}", qrzdb.callsign.addr2, qrzdb.callsign.state, qrzdb.callsign.zip))]));
             }
             else {
-                println!("  Location: {}", qrzdb.callsign.addr2);
+                table.add_row(Row::new(vec![
+                    Cell::new("Location"), 
+                    Cell::new(&qrzdb.callsign.addr2)]));
             }
         }
-        println!("  Country: {}", qrzdb.callsign.land);
+        table.add_row(Row::new(vec![
+            Cell::new("Country"), 
+            Cell::new(&qrzdb.callsign.land)]));
         if !qrzdb.callsign.class.is_empty() {
-            println!("  Class: {}", license(&qrzdb.callsign.class));
+            table.add_row(Row::new(vec![
+                Cell::new("Class"), 
+                Cell::new(license(&qrzdb.callsign.class))]));
         }
+
+        println!("");
+        table.printstd();
+        println!("Source: QRZ\n");
         Ok(())
     }
 }
@@ -368,6 +404,8 @@ pub fn dxcc(entity: &str) -> Result<(), reqwest::Error> {
 
     let qrzdb: QrzDatabase = from_str(&query_resp).unwrap();
 
+    let mut table = Table::new();
+
     if qrzdb.session.error == "Session Timeout" {
         let _key = match session() {
             Ok(k) => k,
@@ -377,14 +415,34 @@ pub fn dxcc(entity: &str) -> Result<(), reqwest::Error> {
         dxcc(entity)?;
         Ok(())
     } else if qrzdb.session.error != "" {
-        println!("QRZ - {}", qrzdb.session.error);
+        table.add_row(Row::new(vec![
+            Cell::new("ERROR"), 
+            Cell::new(&qrzdb.session.error)]));
+        
+        println!("");
+        table.printstd();
+        println!("Source: QRZ\n");
         Ok(())
     } else {
-        println!("\n{} (QRZ)", qrzdb.dxcc.dxcc);
-        println!("  Name: {}", qrzdb.dxcc.name);
-        println!("  ITU: {}", qrzdb.dxcc.ituzone);
-        println!("  CQ: {}", qrzdb.dxcc.cqzone);
-        println!("  UTC: {}", qrzdb.dxcc.timezone);
+        table.add_row(Row::new(vec![
+            Cell::new("DXCC"), 
+            Cell::new(&qrzdb.dxcc.dxcc)]));
+        table.add_row(Row::new(vec![
+            Cell::new("Name"), 
+            Cell::new(&qrzdb.dxcc.name)]));
+        table.add_row(Row::new(vec![
+            Cell::new("ITU"), 
+            Cell::new(&qrzdb.dxcc.ituzone)]));
+        table.add_row(Row::new(vec![
+            Cell::new("CQ"), 
+            Cell::new(&qrzdb.dxcc.cqzone)]));
+        table.add_row(Row::new(vec![
+            Cell::new("UTC"), 
+            Cell::new(&qrzdb.dxcc.timezone)]));
+        
+        println!("");
+        table.printstd();
+        println!("Source: QRZ\n");
         Ok(())
     }
 }
