@@ -1,7 +1,9 @@
 extern crate config;
 extern crate dirs;
+extern crate prettytable;
 extern crate reqwest;
 
+use prettytable::{Table, Row, Cell};
 use serde_xml_rs::from_str;
 use std::path::Path;
 use std::io::prelude::*;
@@ -226,7 +228,7 @@ struct HamQTH {
     dxcc: Dxcc
 }
 
-pub fn session() -> Result<(), reqwest::Error> {
+fn session() -> Result<(), reqwest::Error> {
     let home_dir = match dirs::home_dir() {
         Some(path) => path,
         None => panic!("error"),
@@ -255,7 +257,7 @@ pub fn session() -> Result<(), reqwest::Error> {
     }
 }
 
-pub fn set_session(key: String) -> std::io::Result<()> {
+fn set_session(key: String) -> std::io::Result<()> {
     let home_dir = match dirs::home_dir() {
         Some(path) => path,
         None => panic!("error"),
@@ -266,7 +268,7 @@ pub fn set_session(key: String) -> std::io::Result<()> {
     Ok(())
 }
 
-pub fn get_session() -> String {
+fn get_session() -> String {
     let home_dir = match dirs::home_dir() {
         Some(path) => path,
         None => panic!("error"),
@@ -298,6 +300,8 @@ pub fn query(callsign: &str) -> Result<(), reqwest::Error> {
         .text()?;
 
     let hqth: HamQTH = from_str(&query_resp).unwrap();
+
+    let mut table = Table::new();
     
     if hqth.session.error == "Session does not exist or expired" {
         let _s = match session() {
@@ -307,26 +311,50 @@ pub fn query(callsign: &str) -> Result<(), reqwest::Error> {
         query(callsign)?;
         Ok(())
     } else if hqth.session.error != "" {
-        println!("HamQTH - {}", hqth.session.error);
+        table.add_row(Row::new(vec![
+            Cell::new("ERROR"), 
+            Cell::new(&hqth.session.error)]));
+        
+        println!("");
+        table.printstd();
+        println!("Source: HamQTH\n");
         Ok(())
     } else {
-        println!("\n{} (HamQTH)", hqth.search.callsign.to_uppercase());
-        println!("  Name: {}", hqth.search.adr_name);
+        table.add_row(Row::new(vec![
+            Cell::new("Callsign"), 
+            Cell::new(&hqth.search.callsign.to_uppercase())]));
+        table.add_row(Row::new(vec![
+            Cell::new("Name"), 
+            Cell::new(&hqth.search.adr_name)]));
         if !hqth.search.email.is_empty() {
-            println!("  Email: {}", hqth.search.email);
+            table.add_row(Row::new(vec![
+                Cell::new("Email"), 
+                Cell::new(&hqth.search.email)]));
         }
         if !hqth.search.adr_street1.is_empty() {
-            println!("  Address: {}", hqth.search.adr_street1);
+            table.add_row(Row::new(vec![
+                Cell::new("Address"), 
+                Cell::new(&hqth.search.adr_street1)]));
         }
         if !hqth.search.adr_city.is_empty() {
             if !hqth.search.us_state.is_empty() {
-                println!("  Location: {}, {} {}", hqth.search.adr_city, hqth.search.us_state, hqth.search.adr_zip);
+                table.add_row(Row::new(vec![
+                    Cell::new("Location"), 
+                    Cell::new(&format!("{}, {} {}", hqth.search.adr_city, hqth.search.us_state, hqth.search.adr_zip))]));
             }
             else {
-                println!("  Location: {}", hqth.search.adr_city);
+                table.add_row(Row::new(vec![
+                    Cell::new("Location"), 
+                    Cell::new(&hqth.search.adr_city)]));
             }
         }
-        println!("  Country: {}", hqth.search.adr_country);
+        table.add_row(Row::new(vec![
+            Cell::new("Country"), 
+            Cell::new(&hqth.search.adr_country)]));
+
+        println!("");
+        table.printstd();
+        println!("Source: HamQTH\n");
         Ok(())
     }
 }
@@ -340,10 +368,28 @@ pub fn dxcc(entity: &str) -> Result<(), reqwest::Error> {
         .text()?;
 
     let hqth: HamQTH = from_str(&query_resp).unwrap();
-    println!("\n{} (HamQTH)", hqth.dxcc.adif);
-    println!("  Name: {}", hqth.dxcc.name);
-    println!("  ITU: {}", hqth.dxcc.itu);
-    println!("  UTC: {}", hqth.dxcc.utc);
-    println!("  Details: {}", hqth.dxcc.details);
+
+    let mut table = Table::new();
+
+    table.add_row(Row::new(vec![
+        Cell::new("ADIF"), 
+        Cell::new(&hqth.dxcc.adif)]));
+    table.add_row(Row::new(vec![
+        Cell::new("Name"), 
+        Cell::new(&hqth.dxcc.name)]));
+    table.add_row(Row::new(vec![
+        Cell::new("ITU"), 
+        Cell::new(&hqth.dxcc.itu)]));
+    
+    table.add_row(Row::new(vec![
+        Cell::new("UTC"), 
+        Cell::new(&hqth.dxcc.utc)]));
+    table.add_row(Row::new(vec![
+        Cell::new("Details"), 
+        Cell::new(&hqth.dxcc.details)]));
+    
+    println!("");
+    table.printstd();
+    println!("Source: HamQTH\n");
     Ok(())
 }

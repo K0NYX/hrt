@@ -38,14 +38,26 @@ hrt call K0NYX
 
 example output:
 ```
-K0NYX (QRZ)
-  Name: Bryce Johnston
-  Aliases: KE0TSN
-  Email: bryce@beaorn.com
-  Address: 100 Antenna Way
-  Location: Manhattan, KS 66502
-  Country: United States
-  Class: General
+
++----------+------------------------+
+| Callsign | K0NYX                  |
++----------+------------------------+
+| Name     | Bryce Johnston         |
++----------+------------------------+
+| Aliases  | KE0TSN                 |
++----------+------------------------+
+| Email    | bryce@beaorn.com       |
++----------+------------------------+
+| Address  | PO BOX 000             |
++----------+------------------------+
+| Location | Manhattan, KS 66502    |
++----------+------------------------+
+| Country  | United States          |
++----------+------------------------+
+| Class    | General                |
++----------+------------------------+
+Source: QRZ
+
 ```
 
 Use alternative lookup source HamQTH:
@@ -55,12 +67,20 @@ hrt call K0NYX -s hamqth
 
 example output:
 ```
-K0NYX (HamQTH)
-  Name: Bryce Johnston
-  Email: bryce@beaorn.com
-  Address: 100 Antenna Way
-  Location: Manhattan, KS 66502
-  Country: United States
+
++----------+------------------------+
+| Callsign | K0NYX                  |
++----------+------------------------+
+| Name     | Bryce Johnston         |
++----------+------------------------+
+| Email    | bryce@beaorn.com       |
++----------+------------------------+
+| Location | Manhattan, KS 66502    |
++----------+------------------------+
+| Country  | United States          |
++----------+------------------------+
+Source: HamQTH
+
 ```
 
 ### DXCC lookup
@@ -74,11 +94,20 @@ hrt dxcc 291
 
 example output:
 ```
-291 (QRZ)
-  Name: United States
-  ITU: 0
-  CQ: 0
-  UTC: -5
+
++------+---------------+
+| DXCC | 291           |
++------+---------------+
+| Name | United States |
++------+---------------+
+| ITU  | 0             |
++------+---------------+
+| CQ   | 0             |
++------+---------------+
+| UTC  | -5            |
++------+---------------+
+Source: QRZ
+
 ```
 
 Use alternative lookup source HamQTH:
@@ -88,11 +117,18 @@ hrt dxcc 291 -s hamqth
 
 example output:
 ```
-291 (HamQTH)
-  Name: United States
-  ITU: 8
-  UTC: 5
-  Details:
++---------+---------------+
+| ADIF    | 291           |
++---------+---------------+
+| Name    | United States |
++---------+---------------+
+| ITU     | 8             |
++---------+---------------+
+| UTC     | 5             |
++---------+---------------+
+| Details |               |
++---------+---------------+
+Source: HamQTH
 ```
 
 Lookup by callsign
@@ -102,11 +138,20 @@ hrt dxcc K0NYX
 
 example output:
 ```
-291 (QRZ)
-  Country: United States
-  ITU: 0
-  CQ: 0
-  UTC: -5
+
++------+---------------+
+| DXCC | 291           |
++------+---------------+
+| Name | United States |
++------+---------------+
+| ITU  | 0             |
++------+---------------+
+| CQ   | 0             |
++------+---------------+
+| UTC  | -5            |
++------+---------------+
+Source: QRZ
+
 ```
 
 Use alternative lookup source HamQTH:
@@ -116,11 +161,20 @@ hrt dxcc K0NYX -s hamqth
 
 example output:
 ```
-291 (HamQTH)
-  Name: United States
-  ITU: 07
-  UTC: 7
-  Details: USA - CO,IA,KS,MN,MO,ND,NE,SD
+
++---------+-------------------------------+
+| ADIF    | 291                           |
++---------+-------------------------------+
+| Name    | United States                 |
++---------+-------------------------------+
+| ITU     | 07                            |
++---------+-------------------------------+
+| UTC     | 7                             |
++---------+-------------------------------+
+| Details | USA - CO,IA,KS,MN,MO,ND,NE,SD |
++---------+-------------------------------+
+Source: HamQTH
+
 ```
 
 ## Contributing
