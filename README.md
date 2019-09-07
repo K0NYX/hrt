@@ -56,8 +56,10 @@ example output:
 ```
 K0NYX (HamQTH)
   Name: Bryce Johnston
-  Location: Manhattan, KS
-  Country United States
+  Email: bryce@beaorn.com
+  Address: 100 Antenna Way
+  Location: Manhattan, KS 66502
+  Country: United States
 ```
 
 ### DXCC lookup
